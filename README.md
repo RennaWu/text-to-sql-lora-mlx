@@ -113,7 +113,7 @@ mlx_lm.fuse --model mlx-community/Qwen2.5-3B-Instruct-4bit \
             --save-path fused_model
 
 # 4. Evaluate
-jupyter execute notebooks/02_evaluation.ipynb
+jupyter execute notebooks/03_evaluation.ipynb
 
 # 5. Launch Gradio demo
 python demo/app.py

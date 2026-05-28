@@ -1,0 +1,78 @@
+{
+  "config": {
+    "base_model": "mlx-community/Qwen2.5-3B-Instruct-4bit",
+    "fine_tuned_model": "fused_model (LoRA, 16 layers, 1000 iters, lr=1e-5)",
+    "test_set": "gretelai/synthetic_text_to_sql (held-out 50 samples, seed=42)",
+    "num_samples": 50
+  },
+  "overall": {
+    "exact_match": {
+      "base": 26.0,
+      "fine_tuned": 30.0,
+      "delta": 4.0
+    },
+    "bleu": {
+      "base": 0.504,
+      "fine_tuned": 0.566,
+      "delta_pct": 12.3
+    },
+    "keyword_overlap": {
+      "base": 73.0,
+      "fine_tuned": 77.4,
+      "delta": 4.4
+    }
+  },
+  "by_complexity": {
+    "basic SQL": {
+      "count": 30,
+      "exact_match": {
+        "base": 40.0,
+        "fine_tuned": 43.3
+      },
+      "bleu": {
+        "base": 0.63,
+        "fine_tuned": 0.701
+      }
+    },
+    "aggregation": {
+      "count": 9,
+      "exact_match": {
+        "base": 11.1,
+        "fine_tuned": 22.2
+      },
+      "bleu": {
+        "base": 0.471,
+        "fine_tuned": 0.573
+      },
+      "note": "Largest gain \u2014 fine-tuned model learned to avoid unnecessary self-joins"
+    },
+    "single join": {
+      "count": 5,
+      "exact_match": {
+        "base": 0.0,
+        "fine_tuned": 0.0
+      },
+      "bleu": {
+        "base": 0.095,
+        "fine_tuned": 0.177
+      }
+    }
+  },
+  "case_studies": [
+    {
+      "complexity": "aggregation",
+      "schema": "CREATE TABLE media (id INT, title VARCHAR(50), location VARCHAR(50), genre VARCHAR(50));",
+      "question": "How many distinct genres per location?",
+      "ground_truth": "SELECT location, COUNT(DISTINCT genre) FROM media GROUP BY location;",
+      "base_output": "SELECT T1.location, COUNT(DISTINCT T1.genre) FROM media AS T1 JOIN media AS T2 ON T1.location = T2.location",
+      "fine_tuned_output": "SELECT location, COUNT(DISTINCT genre) FROM media GROUP BY location",
+      "note": "Base model added an unnecessary self-join; fine-tuned model produced cleaner, semantically equivalent SQL."
+    }
+  ],
+  "limitations": [
+    "Exact Match metric is overly strict \u2014 semantically equivalent SQL with different aliasing scores 0",
+    "Only 5,000 training samples used (out of 105K available)",
+    "3B model has limited capacity for subqueries and window functions"
+  ],
+  "_notes": "Per-sample outputs are regenerated when 03_evaluation.ipynb is rerun. This file represents the headline results from the original 50-sample eval run."
+}
