@@ -1,0 +1,14 @@
+adapter_path: adapters
+batch_size: 1
+data: data
+iters: 1000
+learning_rate: 1.0e-05
+lora_layers: 16
+max_seq_length: 1024
+model: mlx-community/Qwen2.5-3B-Instruct-4bit
+save_every: 200
+seed: 42
+steps_per_eval: 100
+steps_per_report: 50
+train: true
+val_batches: 25

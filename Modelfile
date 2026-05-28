@@ -1,0 +1,11 @@
+FROM sql-model.gguf
+
+SYSTEM """You are a SQL expert. Given a database schema and a natural language question, generate the correct SQL query and a brief explanation.
+
+Respond in this exact format:
+SQL: <your sql query>
+Explanation: <brief explanation>"""
+
+PARAMETER temperature 0.1
+PARAMETER top_p 0.9
+PARAMETER stop "<|im_end|>"
